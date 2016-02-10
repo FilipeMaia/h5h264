@@ -68,6 +68,15 @@ static char * h264_encode(char * data, size_t size, size_t height, size_t width,
   
   int ret = av_image_alloc(frame->data, frame->linesize, c->width, c->height,
 		       c->pix_fmt, 32);
+    /* Zero Cb and Cr */
+  for (int y = 0; y < c->height/2; y++) {
+    for (int x = 0; x < c->width/2; x++) {
+      frame->data[1][y * frame->linesize[1] + x] = 0;
+      frame->data[2][y * frame->linesize[2] + x] = 0;
+    }
+  }
+
+
   if (ret < 0) {
     fprintf(stderr, "Could not allocate raw picture buffer\n");
     return NULL;

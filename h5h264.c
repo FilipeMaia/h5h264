@@ -53,7 +53,7 @@ const void *H5PLget_plugin_info(void) {
 static size_t H5Z_filter_h264(unsigned int flags, size_t cd_nelmts,
 			      const unsigned int cd_values[], size_t nbytes,
 			      size_t *buf_size, void **buf){
-    fprintf(stderr,"Calling h5h264\n");
+  //  fprintf(stderr,"Calling h5h264\n");
   //  fprintf(stderr,"cd_nelmts %zu\n", cd_nelmts);
   //  fprintf(stderr,"flags %d\n", flags);
 
@@ -80,7 +80,7 @@ static size_t H5Z_filter_h264(unsigned int flags, size_t cd_nelmts,
     }
     output_buffer = h264_encode(*buf, nbytes, height, width,
 				item_size, buf_size);
-    //    printf("DEBUG: encoded %zu bytes into %zu bytes\n", nbytes, *buf_size);
+    //    printf("DEBUG: encoded %zu bytes into %zu bytes for a ratio of %f\n", nbytes, *buf_size, ((float)*buf_size)/nbytes);
   }
   if(!output_buffer){
     return 0;
