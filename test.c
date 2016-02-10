@@ -16,8 +16,8 @@ uint8_t * gen_data(int width, int height, int nframes){
 
 int main(){
   int width = 1000;
-  int height = 200;
-  int nframes = 50;
+  int height = 1000;
+  int nframes = 123;
   int size = width*height*nframes;
   char * data = (char *)gen_data(width, height, nframes);
   size_t encoded_size;

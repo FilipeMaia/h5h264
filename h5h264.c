@@ -53,6 +53,9 @@ const void *H5PLget_plugin_info(void) {
 static size_t H5Z_filter_h264(unsigned int flags, size_t cd_nelmts,
 			      const unsigned int cd_values[], size_t nbytes,
 			      size_t *buf_size, void **buf){
+    fprintf(stderr,"Calling h5h264\n");
+  //  fprintf(stderr,"cd_nelmts %zu\n", cd_nelmts);
+  //  fprintf(stderr,"flags %d\n", flags);
 
   char *output_buffer = NULL;
 
@@ -63,6 +66,7 @@ static size_t H5Z_filter_h264(unsigned int flags, size_t cd_nelmts,
     /* Compress data */
     if(cd_nelmts != 3){
       /* We're missing the cd values */
+      fprintf(stderr, "cd_values are missing\n");
       return 0;
     }
     int height = cd_values[0];
@@ -70,10 +74,13 @@ static size_t H5Z_filter_h264(unsigned int flags, size_t cd_nelmts,
     int item_size = cd_values[2];
     if(nbytes % (height*width*item_size)){
       /* The cd values must be wrong */
+      fprintf(stderr, "cd_values do not match input size\n");
+      fprintf(stderr, "height - %d width - %d item_size - %d, nbytes - %zu\n", height, width, item_size, nbytes);
       return 0;
     }
     output_buffer = h264_encode(*buf, nbytes, height, width,
-				item_size, buf_size);    
+				item_size, buf_size);
+    //    printf("DEBUG: encoded %zu bytes into %zu bytes\n", nbytes, *buf_size);
   }
   if(!output_buffer){
     return 0;
