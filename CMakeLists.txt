@@ -1,9 +1,17 @@
 cmake_minimum_required(VERSION 2.8)
 
+if(POLICY CMP0042)
+  cmake_policy(SET CMP0042 NEW) # CMake 3.0
+endif()
+
+
 project (h5h264)
 set(CMAKE_BUILD_TYPE Release)
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+find_package(FFMPEG)
+include_directories(${FFMPEG_INCLUDE_DIR})
 
-add_library(h5h264 SHARED h5h264.c)
-target_link_libraries(h5h264 -lavcodec -lavutil)
+
+ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(tests)

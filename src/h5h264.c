@@ -49,19 +49,20 @@ const void *H5PLget_plugin_info(void) {
    *buf points to the input data at the start and should be set
    to point to the output data before returning. 
    N.B. The input data should be freed before returning.
+
+   This filter requires 3 compression options (cd_values) corresponding
+   to the image height, image width and nbytes per element in the dataset.
 */
 static size_t H5Z_filter_h264(unsigned int flags, size_t cd_nelmts,
 			      const unsigned int cd_values[], size_t nbytes,
 			      size_t *buf_size, void **buf){
-  //  fprintf(stderr,"Calling h5h264\n");
-  //  fprintf(stderr,"cd_nelmts %zu\n", cd_nelmts);
-  //  fprintf(stderr,"flags %d\n", flags);
-
   char *output_buffer = NULL;
 
   if (flags & H5Z_FLAG_REVERSE) {
     /* Decompress data */
     output_buffer = h264_decode(*buf, nbytes, buf_size);
+    fprintf(stderr,"DEBUG: decompressed %zu bytes\n",*buf_size);
+
   }else{
     /* Compress data */
     if(cd_nelmts != 3){
@@ -80,7 +81,7 @@ static size_t H5Z_filter_h264(unsigned int flags, size_t cd_nelmts,
     }
     output_buffer = h264_encode(*buf, nbytes, height, width,
 				item_size, buf_size);
-    //    printf("DEBUG: encoded %zu bytes into %zu bytes for a ratio of %f\n", nbytes, *buf_size, ((float)*buf_size)/nbytes);
+    printf("DEBUG: encoded %zu bytes into %zu bytes for a ratio of %f\n", nbytes, *buf_size, ((float)*buf_size)/nbytes);
   }
   if(!output_buffer){
     return 0;
