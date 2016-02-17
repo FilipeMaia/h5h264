@@ -69,13 +69,8 @@ static char * h264_encode(char * data, size_t size, size_t height, size_t width,
   int ret = av_image_alloc(frame->data, frame->linesize, c->width, c->height,
 		       c->pix_fmt, 32);
     /* Zero Cb and Cr */
-  for (int y = 0; y < c->height/2; y++) {
-    for (int x = 0; x < c->width/2; x++) {
-      frame->data[1][y * frame->linesize[1] + x] = 0;
-      frame->data[2][y * frame->linesize[2] + x] = 0;
-    }
-  }
-
+  memset(frame->data[1], 0, c->height*frame->linesize[1]/2);
+  memset(frame->data[2], 0, c->height*frame->linesize[2]/2);
 
   if (ret < 0) {
     fprintf(stderr, "Could not allocate raw picture buffer\n");
@@ -84,7 +79,9 @@ static char * h264_encode(char * data, size_t size, size_t height, size_t width,
 
   int nframes = size/(width*height);
 
-  AVPacket pkt[nframes+1];
+
+  AVPacket * pkt = malloc(sizeof(AVPacket)*(nframes+1));
+
   int pkt_idx = 0;
   for (int i = 0; i < nframes+1; i++) {
     av_init_packet(&pkt[i]);
@@ -97,10 +94,9 @@ static char * h264_encode(char * data, size_t size, size_t height, size_t width,
     /* Y */
     size_t idx = 0;
     for (int y = 0; y < height; y++) { 
-      for (int x = 0; x < width; x++) { 
-	frame->data[0][y * frame->linesize[0] + x] = *data; 
-     	data++; 
-      } 
+      memcpy(&frame->data[0][y * frame->linesize[0]],
+      	     data, width);
+      data += width;
     } 
     /* Skip Cb and Cr */
     frame->pts = i;
@@ -142,7 +138,7 @@ static char * h264_encode(char * data, size_t size, size_t height, size_t width,
     ptr += pkt[i].size;
     av_packet_unref(&pkt[i]);
   }
-
+  free(pkt);
   avcodec_close(c);
   av_free(c);
   av_freep(&frame->data[0]);

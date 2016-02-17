@@ -75,13 +75,9 @@ static char * h264_decode(void * data, size_t size, size_t * output_size){
     data += frame_size;
     size -= frame_size;
     for (int y = 0; y < frame->height; y++) { 
-      for (int x = 0; x < frame->width; x++) { 
-	*output_ptr = frame->data[0][y * frame->linesize[0] + x];
-	output_ptr++;
-      } 
+      memcpy(output_ptr, &frame->data[0][y * frame->linesize[0]], frame->width);
+      output_ptr += frame->width;
     } 
-    //    memcpy(output_ptr, frame->data[0], frame->width*frame->height);
-    //    output_ptr += frame->width*frame->height;
   }
 
   av_parser_close(parser);
