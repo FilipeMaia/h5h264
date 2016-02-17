@@ -61,8 +61,9 @@ static size_t H5Z_filter_h264(unsigned int flags, size_t cd_nelmts,
   if (flags & H5Z_FLAG_REVERSE) {
     /* Decompress data */
     output_buffer = h264_decode(*buf, nbytes, buf_size);
-    fprintf(stderr,"DEBUG: decompressed %zu bytes\n",*buf_size);
-
+#ifndef NDEBUG
+    fprintf(stdout,"[debug] h5h264: decompressed %zu bytes\n",*buf_size);
+#endif
   }else{
     /* Compress data */
     if(cd_nelmts != 3){
@@ -81,7 +82,9 @@ static size_t H5Z_filter_h264(unsigned int flags, size_t cd_nelmts,
     }
     output_buffer = h264_encode(*buf, nbytes, height, width,
 				item_size, buf_size);
-    printf("DEBUG: encoded %zu bytes into %zu bytes for a ratio of %f\n", nbytes, *buf_size, ((float)*buf_size)/nbytes);
+#ifndef NDEBUG
+    fprintf(stdout, "[debug] h5h264: encoded %zu bytes into %zu bytes for a ratio of %f\n", nbytes, *buf_size, ((float)*buf_size)/nbytes);
+#endif
   }
   if(!output_buffer){
     return 0;
