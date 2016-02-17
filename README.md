@@ -10,4 +10,6 @@ It depends on `ffmpeg` with h.264 encoding support.
 
 To be able to use the filter you need to set `HDF5_PLUGIN_PATH` to point to the location of the newly built `libh5h264.so`/`libh5h264.dylib`.
 
-For more information about HDF5 filters check this [PDF](https://www.hdfgroup.org/HDF5/doc/Advanced/DynamicallyLoadedFilters/HDF5DynamicallyLoadedFilters.pdf)
+For more information about HDF5 filters check this [PDF](https://www.hdfgroup.org/HDF5/doc/Advanced/DynamicallyLoadedFilters/HDF5DynamicallyLoadedFilters.pdf).
+
+Check the tests directories for example on how to use this filter with h5py.
